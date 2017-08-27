@@ -17,7 +17,7 @@ RSA_PATH = os.path.join(*(OVPN_DIR,'easy-rsa'))
 KEY_PATH = os.path.join(*(RSA_PATH,'keys'))
 
 
-def make_config(device_name, flags={'no_gateway': False, 'windows_flag': True}):
+def make_config(device_name, flags={'redirect_gateway': False, 'windows_flag': True}):
     # Find VPN subnet address
     with open(os.path.join(*(CFG_PATH,"server.ovpn")), "r") as cfg_file:
         cfg_lines = cfg_file.readlines()
@@ -55,12 +55,12 @@ def make_config(device_name, flags={'no_gateway': False, 'windows_flag': True}):
     config_data=model.render(flags=flags, ca=ca_data, crt=crt_data, key=key_data)
     
     # Save generated config file
-    if flags['no_gateway']:
-        gateway_name = 'local'
+    if flags['redirect_gateway']:
+        gateway_name = '-internet'
     else:
-        gateway_name = 'internet'
+        gateway_name = ''
         
-    config_path = os.path.join("configs","jtcvpn-{0}-{1}.ovpn".format(device_name, gateway_name))
+    config_path = os.path.join("configs","jtcvpn-{0}{1}.ovpn".format(device_name, gateway_name))
     config_file = open(config_path, "w")
     config_file.write(config_data) 
     config_file.close()
@@ -79,5 +79,5 @@ if __name__ == "__main__":
     else:
         is_windows_flag = False
     
-    make_config(dev_name, flags={'no_gateway': False, 'windows_flag': is_windows_flag})
-    make_config(dev_name, flags={'no_gateway': True, 'windows_flag': is_windows_flag})
+    make_config(dev_name, flags={'redirect_gateway': False, 'windows_flag': is_windows_flag})
+    make_config(dev_name, flags={'redirect_gateway': True, 'windows_flag': is_windows_flag})

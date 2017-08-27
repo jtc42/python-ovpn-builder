@@ -67,15 +67,8 @@ route-metric 512
 route 0.0.0.0 0.0.0.0
 {% endif %}
 
-{% if flags['no_gateway'] %}
-# Override def1 default gateway pushed by server
-# See https://community.openvpn.net/openvpn/wiki/IgnoreRedirectGateway
-route 0.0.0.0 192.0.0.0 net_gateway
-route 64.0.0.0 192.0.0.0 net_gateway
-route 128.0.0.0 192.0.0.0 net_gateway
-# Comment out this rule to allow routing of 192. addressed through the VPN. 
-# This is required for remote PiHole
-# route 192.0.0.0 192.0.0.0 net_gateway 
+{% if flags['redirect_gateway'] %}
+redirect-gateway def1
 {% endif %}
 
 <ca>
